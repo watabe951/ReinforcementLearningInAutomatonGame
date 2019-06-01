@@ -1,0 +1,114 @@
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Agent {
+    byte[] state_in;
+    byte[] old_state_in;
+    ByteBuffer state;
+    ByteBuffer old_state;
+    int action;
+    int next_action;
+    int life;
+    int prev_life;
+    double reward;
+    Map<ByteBuffer, Double[]> qfunc;
+    int num_action = 5;
+
+    Cellular cellular;
+    Player player;
+
+    Agent(Cellular cellular) {
+        this.cellular = cellular;
+        this.qfunc = new HashMap<ByteBuffer, Double[]>();
+
+    }
+
+    void init(Player player) {
+        this.state_in = new byte[cellular.xSize * cellular.ySize];
+        this.old_state_in = new byte[cellular.xSize * cellular.ySize];
+        this.player = player;
+
+    }
+
+    void Observe() {
+
+        getState();
+
+        getReward();
+
+        if (!this.qfunc.containsKey(this.state)) {
+            qfunc.put(this.state, new Double[num_action]);
+        }
+    }
+
+    void getState() {
+        // System.out.println("getState:");
+        for (int i = 0; i < this.cellular.xSize; i++) {
+            for (int j = 0; j < this.cellular.ySize; j++) {
+                // System.out.println("read:" + i + ", " + j);
+
+                this.state_in[i * this.cellular.xSize + j] = (byte) (this.cellular.cells[i][j].state);
+
+            }
+        }
+        this.old_state = this.state;
+        this.state = ByteBuffer.wrap(this.state_in);
+
+        this.prev_life = this.life;
+        this.life = this.player.life;
+    }
+
+    void getReward() {
+        if (life < prev_life) {
+            this.reward = -1;
+        }
+        if (this.cellular.gameOver) {
+            this.reward = 5;
+        }
+    }
+
+    void updateQFunction() {
+        double lambda = 0.5;
+        double alpha = 0.5;
+        double maxQ = Double.MIN_VALUE;
+        Double[] newQ = new Double[this.num_action];
+        newQ = this.qfunc.get(this.old_state);
+        for (int i = 0; i < this.num_action; i++) {
+            if (maxQ < this.qfunc.get(this.state)[i]) {
+                maxQ = this.qfunc.get(this.state)[i];
+            }
+        }
+        double temporaldifference = reward + lambda * maxQ - this.qfunc.get(this.old_state)[action];
+
+        newQ[this.action] += alpha * temporaldifference;
+        this.qfunc.put(this.state, newQ);
+    }
+
+    int policy() {
+
+        double maxQ = Double.MIN_VALUE;
+        if (this.qfunc.containsKey(this.state)) {
+            Double[] aaa = { 0.0, 0.0, 0.0, 0.0, 0.0 };
+            qfunc.put(this.state, aaa);
+        }
+        System.out.println(this.state);
+        for (int i = 0; i < this.num_action; i++) {
+            System.out.println((this.qfunc.get(this.state))[i]);
+            if (maxQ < (this.qfunc.get(this.state))[i]) {
+
+                maxQ = this.qfunc.get(this.state)[i];
+                this.action = i;
+            }
+        }
+        if (Math.random() < 0.8) {
+            return this.action;
+        } else {
+            return this.action = (int) (Math.random() * this.num_action);
+        }
+    }
+}
