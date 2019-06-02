@@ -26,12 +26,13 @@ public class Agent {
     Player player;
     int max_iter = 100000;
     int iter;
+    boolean first_arrived;
 
     Agent() {
         iter = 0;
         total_reward = 0;
         this.qfunc = new HashMap<ByteBuffer, Double[]>();
-
+        first_arrived = false;
     }
 
     void init(Player player, Cellular cellular) {
@@ -85,6 +86,7 @@ public class Agent {
     }
 
     void getReward() {
+        this.reward = 0;
         if (life < prev_life) {
             this.reward = -1;
         }
@@ -93,6 +95,9 @@ public class Agent {
         }
         if (this.cellular.clearFlug)
             this.reward = 10;
+        // if(this.player.y <= 50){
+        //     this.reward = 10;
+        // }
     }
 
     void updateQFunction() {
@@ -100,13 +105,14 @@ public class Agent {
         double alpha = 0.8;
         double maxQ = Double.MIN_VALUE;
         Double[] newQ = new Double[this.num_action];
-
+        first_arrived = false;
         if (!this.qfunc.containsKey(this.old_state)) {
-
+            first_arrived = true;
             Double[] aaa = { 0.0, 0.0, 0.0, 0.0, 0.0 };
             qfunc.put(this.old_state, aaa);
         }
         if (!this.qfunc.containsKey(this.state)) {
+            first_arrived = true;
             Double[] aaa = { 0.0, 0.0, 0.0, 0.0, 0.0 };
             qfunc.put(this.state, aaa);
         }
@@ -130,11 +136,14 @@ public class Agent {
         double maxQ = Double.MIN_VALUE;
         this.iter++;
         // ByteBufferUtility.printByteBuffer(this.state);
-        System.out.println(
-                "------------At: " + iter + "/" + max_iter + ", total_reward: " + total_reward + "-----------------");
-        System.out.println("-Qfunc-");
+        // System.out.println(
+        //         "------------At: " + iter + "/" + max_iter + ", total_reward: " + total_reward + "-----------------"+"agent (x,y):"+this.player.x+": "+this.player.y);
+        // System.out.println("-Qfunc-");
         for (int i = 0; i < this.num_action; i++) {
-            System.out.println((this.qfunc.get(this.state))[i]);
+            if(!first_arrived){
+                System.out.println(i+": "+(this.qfunc.get(this.state))[i]);
+            }
+
             if (maxQ < (this.qfunc.get(this.state))[i]) {
 
                 maxQ = this.qfunc.get(this.state)[i];
