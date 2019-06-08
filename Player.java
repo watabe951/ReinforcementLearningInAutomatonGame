@@ -5,7 +5,7 @@ public class Player extends GameObject {
 
     Player(int initX, int initY, String upFilepath, String downFilepath, String rightFilepath, String leftFilepath) {
         super(initX, initY, upFilepath, downFilepath, rightFilepath, leftFilepath);
-        life = 3;
+        life = 100;
         muteki = false;
     }
 

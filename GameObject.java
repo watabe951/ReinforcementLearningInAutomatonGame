@@ -43,7 +43,7 @@ abstract class GameObject{
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
             int l = 0;
-            System.out.println("parsing Object");
+            // System.out.println("parsing Object");
             while (( str = bufferedReader.readLine() ) != null ) {
                 l++;
                 if(str.charAt(0) == '#' || str.charAt(0) == '\n'){
@@ -55,9 +55,9 @@ abstract class GameObject{
 
                 for (int i = 0; i < str.length(); i++) {
                     state[i][lineNum] = Integer.parseInt(""+str.charAt(i));
-                    System.out.print(Integer.parseInt(""+str.charAt(i)));
+                    // System.out.print(Integer.parseInt(""+str.charAt(i)));
                 }
-                System.out.println("");
+                // System.out.println("");
                 lineNum++;
             }
             ySize = lineNum;
