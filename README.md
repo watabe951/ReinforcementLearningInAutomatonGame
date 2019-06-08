@@ -7,4 +7,3 @@
 Java AppletViewerを用意してください。
 $ appletviewer mainApplet.java
 で起動します。agent君(青いやつ)が頑張る様子を見ましょう。
-

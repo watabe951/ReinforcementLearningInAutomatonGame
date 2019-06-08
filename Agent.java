@@ -26,12 +26,13 @@ public class Agent {
     Player player;
     int max_iter = 100000;
     int iter;
+    double[] rec_total_reward;
 
     Agent() {
         iter = 0;
         total_reward = 0;
         this.qfunc = new HashMap<ByteBuffer, Double[]>();
-
+        rec_total_reward = new double[max_iter];
     }
 
     void init(Player player, Cellular cellular) {
@@ -44,7 +45,6 @@ public class Agent {
     }
 
     void Observe() {
-
         getState();
         getReward();
         updateQFunction();
@@ -128,11 +128,12 @@ public class Agent {
     int policy() {
         double beta = 0.3;
         double maxQ = Double.MIN_VALUE;
+        rec_total_reward[iter] = total_reward;
         this.iter++;
         // ByteBufferUtility.printByteBuffer(this.state);
         System.out.println(
                 "------------At: " + iter + "/" + max_iter + ", total_reward: " + total_reward + "-----------------");
-        System.out.println("-Qfunc-");
+        System.out.println("-Qfunction-");
         for (int i = 0; i < this.num_action; i++) {
             System.out.println((this.qfunc.get(this.state))[i]);
             if (maxQ < (this.qfunc.get(this.state))[i]) {

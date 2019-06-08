@@ -34,7 +34,7 @@ public class Cellular {
     }
 
     void parseFile() {
-        file = new File("./stage05.txt");
+        file = new File("./stage/stage05.txt");
         if (!file.exists()) {
             // System.out.print("ファイルが存在しません");
             return;
@@ -118,9 +118,10 @@ public class Cellular {
         }
 
         parseFile();
-        player = new Player(coordinate[0], coordinate[1], "./playerUP.txt", "./playerDOWN.txt", "./playerRIGHT.txt",
-                "./playerLEFT.txt");
-        bullet = new Bullet(0, 0, "./bulletUP.txt", "./bulletDOWN.txt", "./bulletRIGHT.txt", "./bulletLEFT.txt");
+        player = new Player(coordinate[0], coordinate[1], "./objects/playerUP.txt", "./objects/playerDOWN.txt",
+                "./objects/playerRIGHT.txt", "./objects/playerLEFT.txt");
+        bullet = new Bullet(0, 0, "./objects/bulletUP.txt", "./objects/bulletDOWN.txt", "./objects/bulletRIGHT.txt",
+                "./objects/bulletLEFT.txt");
         agent.init(this.player, this);
         this.canvas.waitFlag = false;
     }
